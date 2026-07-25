@@ -21,5 +21,27 @@ pipeline {
                 bat 'npm run build'
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                bat 'docker build -t sahillsalmanov/erp-frontend:latest .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat '''
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    docker push sahillsalmanov/erp-frontend:latest
+                    docker logout
+                    '''
+                }
+            }
+        }
     }
 }
