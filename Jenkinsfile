@@ -53,7 +53,8 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     bat '''
-                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    @echo off
+                    echo|set /p=%DOCKER_PASS%|docker login -u %DOCKER_USER% --password-stdin
                     docker push sahillsalmanov/erp-frontend:latest
                     docker logout
                     '''
